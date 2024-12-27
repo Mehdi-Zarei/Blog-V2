@@ -2,7 +2,9 @@
   "name": "blog-v2-with-sequelize",
   "version": "1.0.0",
   "main": "server.js",
-  "scripts": {},
+  "scripts": {
+    "dev": "dotenv -e .env nodemon server.js"
+  },
   "keywords": [],
   "author": "Mehdi Zarei",
   "license": "MIT",
