@@ -42,9 +42,9 @@ const sequelize = new Sequelize(`mysql://root:@localhost:3306/BLOG_V2`, {
 (async () => {
   try {
     await sequelize.sync(); //TODO: remove force: true
-    console.log("Database synced successfully.");
+    console.log(`Database ${configs.DB.database} synced successfully.`);
   } catch (err) {
-    console.error("Error syncing database:", err);
+    console.error(`Error syncing ${configs.DB.database} database:`, err);
   }
 })();
 
