@@ -38,6 +38,7 @@ const Articles = db.define(
     author_id: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
+      field: "author",
     },
   },
 
