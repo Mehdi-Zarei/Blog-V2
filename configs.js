@@ -16,4 +16,12 @@ module.exports = {
     accessTokenExpireInSecond: process.env.ACCESS_TOKEN_EXPIRE_IN_SECOND,
     refreshTokenExpireInSecond: process.env.REFRESH_TOKEN_EXPIRE_IN_SECOND,
   },
+
+  redis: {
+    uri: process.env.Redis_URI,
+  },
+
+  mySql: {
+    uri: process.env.MY_SQL_URI,
+  },
 };
