@@ -1,5 +1,6 @@
 const { Users, Articles, Tags } = require("./models/Associations");
 const db = require("./db");
+const redis = require("./redis");
 const configs = require("./configs");
 const app = require("./app");
 
