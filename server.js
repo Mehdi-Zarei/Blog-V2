@@ -11,5 +11,6 @@ const app = require("./app");
     });
   } catch (error) {
     console.log("Error -->", error);
+    process.exit(0);
   }
 })();
