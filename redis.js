@@ -1,9 +1,8 @@
-const Redis = require("ioredis"); // Import Redis client
-
+const { default: Redis } = require("ioredis");
 const configs = require("./configs");
 
 // Initialize Redis client using the provided URI
-const redisClient = new Redis("redis://127.0.0.1:6379");
+const redisClient = new Redis(configs.redis.uri);
 
 // Event listeners for connection success and error handling
 redisClient.on("connect", () => {
@@ -12,6 +11,6 @@ redisClient.on("connect", () => {
 
 redisClient.on("error", (error) => {
   console.error("Redis connection error:", error);
+  redisClient.quit();
 });
-
-module.exports = redisClient; // Export the Redis client for reuse
+redisClient.module.exports = redisClient; // Export the Redis client for reuse
