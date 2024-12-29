@@ -23,6 +23,7 @@ app.use(express.static(path.resolve(__dirname, "public")));
 //* Third-party Middleware
 
 app.use(cors());
+app.set("view engine", "ejs");
 // app.use(localStrategy);
 
 //* Import Routes
