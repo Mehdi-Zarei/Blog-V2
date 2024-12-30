@@ -46,13 +46,4 @@ const registerValidatorSchema = yup.object().shape({
     .required(),
 });
 
-const loginValidatorSchema = yup.object().shape({
-  email: yup
-    .string()
-    .min(3, " email  must be at least 3 characters long.")
-    .max(50, " email should not exceed 50 characters")
-    .email()
-    .required(" email is required"),
-});
-
 module.exports = registerValidatorSchema;
