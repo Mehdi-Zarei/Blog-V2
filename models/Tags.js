@@ -17,6 +17,10 @@ const Tags = db.define(
         len: [3, 10],
       },
     },
+    user_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
   },
   {
     paranoid: true,
