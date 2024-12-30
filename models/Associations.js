@@ -1,6 +1,7 @@
 const Users = require("./Users");
 const Articles = require("../models/Articles");
 const Tags = require("./Tags");
+const ArticlesTags = require("./ArticlesTags");
 
 Users.hasMany(Articles, {
   foreignKey: "author_id",
@@ -36,9 +37,9 @@ Articles.belongsToMany(Tags, {
 
 Tags.belongsToMany(Articles, {
   through: "ArticlesTags",
-  foreignKey: " articles_id",
+  foreignKey: "articles_id",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
 
-module.exports = { Users, Articles, Tags };
+module.exports = { Users, Articles, Tags, ArticlesTags };
