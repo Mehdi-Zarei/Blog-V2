@@ -1,10 +1,17 @@
-const { Users, Articles, Tags } = require("./models/Associations");
 const db = require("./db");
+
+const {
+  Users,
+  Articles,
+  Tags,
+  ArticlesTags,
+} = require("./models/Associations");
+
 const redis = require("./redis");
 const configs = require("./configs");
 const app = require("./app");
 
-(async () => {
+(async function startServer() {
   try {
     app.listen(configs.server.port, () => {
       console.log(`Server Running On Port ${configs.server.port}`);
