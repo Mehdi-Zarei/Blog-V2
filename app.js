@@ -24,7 +24,7 @@ app.use(express.static(path.resolve(__dirname, "public")));
 
 app.use(cors());
 app.set("view engine", "ejs");
-// app.use(localStrategy);
+passport.use(localStrategy);
 
 //* Import Routes
 
