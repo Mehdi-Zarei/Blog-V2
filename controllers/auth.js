@@ -76,3 +76,38 @@ exports.register = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.login = async (req, res, next) => {
+  try {
+    const user = req.user;
+
+    const accessToken = jwt.sign(
+      { id: user.id, role: user.role },
+      configs.auth.accessTokenSecretKey,
+      { expiresIn: `${configs.auth.accessTokenExpireInMinutes}m` }
+    );
+
+    const refreshToken = jwt.sign(
+      { id: user.id },
+      configs.auth.refreshTokenSecretKey,
+      { expiresIn: `${configs.auth.refreshTokenExpireInDays}d` }
+    );
+
+    const hashedRefreshToken = bcrypt.hashSync(refreshToken, 12);
+
+    await redis.set(
+      `refreshToken:${user.id}`,
+      hashedRefreshToken,
+      "EX",
+      configs.redis.refreshTokenExpireTimeInRedis
+    );
+
+    return res.status(200).json({
+      message: "User logged in successfully.",
+      accessToken,
+      refreshToken,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
