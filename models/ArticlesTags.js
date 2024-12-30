@@ -26,14 +26,7 @@ const Articles = db.define(
     paranoid: true,
     freezeTableName: true,
     timestamps: true,
-
-    //* primary key تنظیمات لازم برای کلید ترکیبی به جای
-    indexes: [
-      {
-        unique: true,
-        fields: ["article_id", "tag_id"],
-      },
-    ],
+    primaryKey: true,
   }
 );
 
