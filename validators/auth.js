@@ -1,7 +1,7 @@
 const yup = require("yup");
 
 // Define a validation schema for user fields
-module.exports.registerValidatorSchema = yup.object().shape({
+const registerValidatorSchema = yup.object().shape({
   name: yup
     .string()
     .required("Name is required.") // Field is mandatory
@@ -39,11 +39,14 @@ module.exports.registerValidatorSchema = yup.object().shape({
     ), // Regex to enforce strong password rules
   confirmPassword: yup
     .string()
-    .oneOf([yup.ref("password")])
+    .oneOf(
+      [yup.ref("password")],
+      "confirmPassword must be equal to the password value."
+    )
     .required(),
 });
 
-module.exports.loginValidatorSchema = yup.object().shape({
+const loginValidatorSchema = yup.object().shape({
   email: yup
     .string()
     .min(3, " email  must be at least 3 characters long.")
@@ -51,3 +54,5 @@ module.exports.loginValidatorSchema = yup.object().shape({
     .email()
     .required(" email is required"),
 });
+
+module.exports = registerValidatorSchema;
