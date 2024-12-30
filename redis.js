@@ -13,4 +13,5 @@ redisClient.on("error", (error) => {
   console.error("Redis connection error:", error);
   redisClient.quit();
 });
-redisClient.module.exports = redisClient; // Export the Redis client for reuse
+
+module.exports = redisClient; // Export the Redis client for reuse
