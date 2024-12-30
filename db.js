@@ -29,7 +29,7 @@ const sequelize = new Sequelize(`mysql://root:@localhost:3306/BLOG_V2`, {
 
 ///////////////////////////////////////////
 
-(async () => {
+(async function testDatabaseConnection() {
   try {
     await sequelize.authenticate();
     console.log(`Connect To ${configs.DB.database} DB Successfully.`);
@@ -39,9 +39,9 @@ const sequelize = new Sequelize(`mysql://root:@localhost:3306/BLOG_V2`, {
   }
 })();
 
-(async () => {
+(async function syncDatabase() {
   try {
-    await sequelize.sync({ alert: true, force: true }); //TODO: remove force: true
+    await sequelize.sync({ force: true, alter: true }); //TODO: remove force: true
     console.log(`Database ${configs.DB.database} synced successfully.`);
   } catch (err) {
     console.error(`Error syncing ${configs.DB.database} database:`, err);
