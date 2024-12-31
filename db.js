@@ -10,24 +10,24 @@ const { Sequelize } = require("sequelize");
 //   }
 // );
 
-//* Way 2
+///////////////////////////////////////////
 
-// const sequelize = new Sequelize({
-//   host: configs.DB.host,
-//   username: configs.DB.username,
-//   password: configs.DB.password,
-//   database: configs.DB.database,
-//   dialect: "mysql",
-//   logging: false, //console.log,
+//* Way 2
+// const sequelize = new Sequelize(`mysql://root:@localhost:3306/BLOG_V2`, {
+// logging: console.log, // Optional: Disable logging
+//   logging: false,
 // });
 
 //* Way 3
 
-const sequelize = new Sequelize(`mysql://root:@localhost:3306/BLOG_V2`, {
-  logging: false, // Optional: Disable logging
+const sequelize = new Sequelize({
+  host: configs.DB.host,
+  username: configs.DB.username,
+  password: configs.DB.password,
+  database: configs.DB.database,
+  dialect: "mysql",
+  logging: false, //console.log,
 });
-
-///////////////////////////////////////////
 
 (async function testDatabaseConnection() {
   try {
@@ -41,7 +41,7 @@ const sequelize = new Sequelize(`mysql://root:@localhost:3306/BLOG_V2`, {
 
 (async function syncDatabase() {
   try {
-    await sequelize.sync(); //TODO: remove force: true
+    await sequelize.sync({ alert: true, force: false }); //TODO: remove force: true
     console.log(`Database ${configs.DB.database} synced successfully.`);
   } catch (err) {
     console.error(`Error syncing ${configs.DB.database} database:`, err);
