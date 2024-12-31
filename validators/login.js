@@ -19,7 +19,8 @@ const loginValidatorSchema = yup.object().shape({
       "Password must include at least one uppercase letter, one lowercase letter, one number, and one special character."
     ), // Regex to enforce strong password rules
 
-  captcha: yup.string().max(4).required(),
+  captcha: yup.string().max(6).required(),
+  uuid: yup.string().uuid().required(),
 });
 
 module.exports = loginValidatorSchema;
