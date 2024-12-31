@@ -21,8 +21,10 @@ exports.get = async (req, res, next) => {
 
     //* To log in, the user needs to enter a uuid and captcha, which are generated after sending the request and can be accessed in the console.
 
-    // console.log("UUID -->", uuid);
-    // console.log("Captcha -->", captcha.text);
+    //TODO : Clear Logs
+
+    console.log("UUID -->", uuid);
+    console.log("Captcha -->", captcha.text);
 
     res.json({
       uuid,
