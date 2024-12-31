@@ -2,6 +2,7 @@ const fs = require("fs");
 const articlesModel = require("../models/Articles");
 const TagsModel = require("../models/Tags");
 const slugify = require("slugify");
+const { v4: uuidv4 } = require("uuid");
 
 exports.create = async (req, res, next) => {
   try {
@@ -11,7 +12,15 @@ exports.create = async (req, res, next) => {
 
     tags = Array.isArray(tags) ? tags : [tags];
 
-    const slug = slugify(title, { lower: true });
+    let slug = slugify(title, { lower: true });
+
+    const isSlugExist = !!(await articlesModel.findOne({ where: { slug } }));
+
+    //* Generate Unique Slug if the slug already exist
+
+    if (isSlugExist) {
+      slug = slug + "-" + uuidv4().replace(/[^\d]/g, "").slice(1, 5);
+    }
 
     // tags = tags.map((tag) =>
     //   TagsModel.findOrCreate({ where: { title: tag.trim() } })
@@ -30,10 +39,12 @@ exports.create = async (req, res, next) => {
       cover: req.file ? coverPath : null,
     });
 
-    return res
-      .status(201)
-      .json({ message: "New Article Created Successfully.", newArticles });
+    return res.status(201).json({
+      message: "New Article Created Successfully.",
+      newArticles,
+    });
   } catch (error) {
+    console.log(error);
     next(error);
   }
 };
