@@ -28,7 +28,7 @@ const Articles = db.define(
     },
     cover: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     publish: {
       type: DataTypes.BOOLEAN,
