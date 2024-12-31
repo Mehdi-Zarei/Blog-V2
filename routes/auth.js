@@ -3,9 +3,10 @@ const router = express.Router();
 const passport = require("passport");
 
 const validateSchema = require("../validators/auth");
-const validate = require("../middlewares/authValidate");
+const validate = require("../middlewares/bodyValidate");
 const authController = require("../controllers/auth");
 const loginValidatorSchema = require("../validators/login");
+const captcha = require("../middlewares/captcha");
 
 router
   .route("/register")
@@ -15,6 +16,7 @@ router
   .route("/login")
   .post(
     validate(loginValidatorSchema),
+    captcha,
     passport.authenticate("local", { session: false }),
     authController.login
   );
