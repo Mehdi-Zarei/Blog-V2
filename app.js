@@ -23,13 +23,12 @@ app.use(express.static(path.resolve(__dirname, "public")));
 //* Third-party Middleware
 
 app.use(cors());
-app.set("view engine", "ejs");
 passport.use(localStrategy);
 
 //* Import Routes
 
 app.use("/api/auth", authRouter);
-app.use("/captcha", captchaController.get);
+app.use("/api/captcha", captchaController.get);
 app.use("/api/users", userRouter);
 app.use("/api/articles", articlesRouter);
 
