@@ -13,6 +13,7 @@ const articlesRouter = require("./routes/articles");
 const captchaController = require("./controllers/captcha");
 
 const localStrategy = require("./strategies/localStrategy");
+const accessTokenStrategy = require("./strategies/accessTokenStrategy");
 
 //* Built-in Middlewares
 
@@ -23,7 +24,10 @@ app.use(express.static(path.resolve(__dirname, "public")));
 //* Third-party Middleware
 
 app.use(cors());
+
 passport.use(localStrategy);
+
+passport.use("accessToken", accessTokenStrategy);
 
 //* Import Routes
 
