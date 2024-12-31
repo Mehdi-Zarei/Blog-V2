@@ -12,6 +12,8 @@ const articlesRouter = require("./routes/articles");
 
 const captchaController = require("./controllers/captcha");
 
+const { errorHandler } = require("./middlewares/errorHandler");
+
 const localStrategy = require("./strategies/localStrategy");
 const accessTokenStrategy = require("./strategies/accessTokenStrategy");
 
@@ -41,5 +43,8 @@ app.use("/api/articles", articlesRouter);
 app.use((req, res) => {
   return res.status(404).json({ message: "OoPss!Page Not Found !!" });
 });
+
+//* Global Error Handler
+app.use(errorHandler);
 
 module.exports = app;
