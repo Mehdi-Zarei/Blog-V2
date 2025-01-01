@@ -40,11 +40,16 @@ const uploader = multer({
   limits: { fileSize: 3 * 1024 * 1024 }, // 3MB
 });
 
-router.route("/").post(
-  passport.authenticate("accessToken", { session: false }), //todo: uncomment this line
-  uploader.single("cover"),
-  validator(articleSchema),
-  articleController.create
-);
+router
+  .route("/")
+  .post(
+    passport.authenticate("accessToken", { session: false }), //todo: uncomment this line
+    uploader.single("cover"),
+    validator(articleSchema),
+    articleController.create
+  )
+  .get(articleController.getAll);
+
+router.route("/:slug").get(articleController.findBySlug);
 
 module.exports = router;
