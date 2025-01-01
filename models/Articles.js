@@ -35,6 +35,10 @@ const Articles = db.define(
       defaultValue: false,
       allowNull: false,
     },
+    tags: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     author_id: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
