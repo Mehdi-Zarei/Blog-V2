@@ -2,7 +2,6 @@ const fs = require("fs");
 const articlesModel = require("../models/Articles");
 const TagsModel = require("../models/Tags");
 const slugify = require("slugify");
-const { v4: uuidv4 } = require("uuid");
 
 exports.create = async (req, res, next) => {
   try {
@@ -19,7 +18,7 @@ exports.create = async (req, res, next) => {
     //* Generate Unique Slug if the slug already exist
 
     if (isSlugExist) {
-      slug = slug + "-" + uuidv4().replace(/[^\d]/g, "").slice(1, 5);
+      slug = slug + "-" + Date.now().toString().slice(-4);
     }
 
     // tags = tags.map((tag) =>
