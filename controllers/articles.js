@@ -1,6 +1,7 @@
 const fs = require("fs");
 const articlesModel = require("../models/Articles");
-const TagsModel = require("../models/Tags");
+// const TagsModel = require("../models/Tags");
+const UsersModel = require("../models/Users");
 const slugify = require("slugify");
 
 exports.create = async (req, res, next) => {
@@ -9,7 +10,9 @@ exports.create = async (req, res, next) => {
 
     const author = await req.user;
 
-    tags = Array.isArray(tags) ? tags : [tags];
+    console.log(tags);
+
+    // tags = Array.isArray(tags) ? tags : [tags];
 
     let slug = slugify(title, { lower: true });
 
@@ -35,6 +38,7 @@ exports.create = async (req, res, next) => {
       slug,
       publish: false,
       author_id: author.id,
+      tags,
       cover: req.file ? coverPath : null,
     });
 
@@ -44,6 +48,44 @@ exports.create = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
+    next(error);
+  }
+};
+
+exports.findBySlug = async (req, res, next) => {
+  try {
+    const slug = req.params;
+
+    const article = await articlesModel.findOne({
+      where: slug,
+      include: [
+        {
+          model: UsersModel,
+          attributes: ["name", "userName"],
+          as: "author",
+        },
+        {
+          model: TagsModel,
+          attributes: ["title"],
+          through: {
+            attributes: [],
+          },
+        },
+      ],
+      attributes: {
+        exclude: ["author_id", "deletedAt"],
+      },
+    });
+
+    return res.status(200).json(article);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getAll = async (req, res, next) => {
+  try {
+  } catch (error) {
     next(error);
   }
 };
