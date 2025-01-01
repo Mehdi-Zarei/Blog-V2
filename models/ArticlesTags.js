@@ -12,10 +12,10 @@ const Articles = db.define(
       },
       allowNull: false,
     },
-    tags_id: {
+    user_id: {
       type: DataTypes.INTEGER.UNSIGNED,
       references: {
-        model: "Tags",
+        model: "Users",
         key: "id",
       },
       allowNull: false,
