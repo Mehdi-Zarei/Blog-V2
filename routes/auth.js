@@ -21,4 +21,18 @@ router
     authController.login
   );
 
+router
+  .route("/logout")
+  .post(
+    passport.authenticate("accessToken", { session: false }),
+    authController.logOut
+  );
+
+router
+  .route("/me")
+  .get(
+    passport.authenticate("accessToken", { session: false }),
+    authController.getMe
+  );
+
 module.exports = router;
