@@ -111,3 +111,25 @@ exports.login = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.logOut = async (req, res, next) => {
+  try {
+    const userID = req.user.id;
+
+    await redis.del(`refreshToken:${userID}`);
+
+    return res.status(200).json({ message: "User logged out successfully." });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getMe = async (req, res, next) => {
+  try {
+    const user = req.user;
+
+    return res.json(user);
+  } catch (error) {
+    next(error);
+  }
+};
