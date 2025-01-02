@@ -11,7 +11,7 @@ module.exports = new jwtStrategy(
   },
   async (payload, done) => {
     try {
-      const user = userModel.findByPk(payload.id, {
+      const user = await userModel.findByPk(payload.id, {
         raw: true,
         attributes: {
           exclude: ["password"],
