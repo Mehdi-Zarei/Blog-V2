@@ -47,7 +47,7 @@ const Articles = db.define(
   },
 
   {
-    paranoid: true,
+    paranoid: false,
     freezeTableName: true,
     timestamps: true,
   }
