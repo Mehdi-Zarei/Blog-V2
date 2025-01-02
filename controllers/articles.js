@@ -10,8 +10,6 @@ exports.create = async (req, res, next) => {
 
     const author = await req.user;
 
-    console.log(tags);
-
     // tags = Array.isArray(tags) ? tags : [tags];
 
     let slug = slugify(title, { lower: true });
@@ -64,13 +62,6 @@ exports.findBySlug = async (req, res, next) => {
           attributes: ["name", "userName"],
           as: "author",
         },
-        {
-          model: TagsModel,
-          attributes: ["title"],
-          through: {
-            attributes: [],
-          },
-        },
       ],
       attributes: {
         exclude: ["author_id", "deletedAt"],
@@ -78,6 +69,30 @@ exports.findBySlug = async (req, res, next) => {
     });
 
     return res.status(200).json(article);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.remove = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const mainUser = await req.user;
+
+    const article = await articlesModel.findByPk(id);
+
+    if (!article) {
+      return res.status(404).json({ message: "Article not found !!" });
+    }
+
+    if (article.author_id !== mainUser.id) {
+      return res.status(403).json({ message: "Forbidden !!" });
+    }
+
+    const remove = await articlesModel.destroy({ where: { id } });
+
+    return res.status(200).json({ message: "Article removed successfully." });
   } catch (error) {
     next(error);
   }
