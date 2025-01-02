@@ -67,6 +67,8 @@ exports.register = async (req, res, next) => {
       configs.redis.refreshTokenExpireTimeInRedis
     );
 
+    console.log(req.header("authorization"));
+
     return res.status(201).json({
       message: "New user created successfully.",
       accessToken,
@@ -107,6 +109,13 @@ exports.login = async (req, res, next) => {
       accessToken,
       refreshToken,
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.refreshToken = async (req, res, next) => {
+  try {
   } catch (error) {
     next(error);
   }
