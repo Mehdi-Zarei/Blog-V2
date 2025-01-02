@@ -16,6 +16,7 @@ const { errorHandler } = require("./middlewares/errorHandler");
 
 const localStrategy = require("./strategies/localStrategy");
 const accessTokenStrategy = require("./strategies/accessTokenStrategy");
+const refreshTokenStrategy = require("./strategies/refreshTokenStrategy");
 
 //* Built-in Middlewares
 
@@ -30,7 +31,7 @@ app.use(cors());
 passport.use(localStrategy);
 
 passport.use("accessToken", accessTokenStrategy);
-
+passport.use("refreshToken", refreshTokenStrategy);
 //* Import Routes
 
 app.use("/api/auth", authRouter);
