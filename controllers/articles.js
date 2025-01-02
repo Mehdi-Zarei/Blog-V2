@@ -3,6 +3,9 @@ const articlesModel = require("../models/Articles");
 // const TagsModel = require("../models/Tags");
 const UsersModel = require("../models/Users");
 const slugify = require("slugify");
+const {
+  calculatingRelativeTimeDifference,
+} = require("../utils/CalculatingTimeDifference");
 
 exports.create = async (req, res, next) => {
   try {
@@ -66,7 +69,15 @@ exports.findBySlug = async (req, res, next) => {
       attributes: {
         exclude: ["author_id", "deletedAt"],
       },
+      raw: true,
     });
+
+    if (!article) {
+      return res.status(404).json({ message: "Article not found !!" });
+    } else {
+      article.createdAt = calculatingRelativeTimeDifference(article.createdAt);
+      article.updatedAt = calculatingRelativeTimeDifference(article.updatedAt);
+    }
 
     return res.status(200).json(article);
   } catch (error) {
@@ -100,6 +111,27 @@ exports.remove = async (req, res, next) => {
 
 exports.getAll = async (req, res, next) => {
   try {
+    const articles = await articlesModel.findAll({
+      include: [
+        {
+          model: UsersModel,
+          attributes: ["name", "userName"],
+          as: "author",
+        },
+      ],
+      attributes: {
+        exclude: ["author_id", "deletedAt"],
+      },
+      order: [["id", "DESC"]],
+      raw: true,
+    });
+
+    articles.forEach((article) => {
+      article.createdAt = calculatingRelativeTimeDifference(article.createdAt);
+      article.updatedAt = calculatingRelativeTimeDifference(article.updatedAt);
+    });
+
+    return res.json(articles);
   } catch (error) {
     next(error);
   }
