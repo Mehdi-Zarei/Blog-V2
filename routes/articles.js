@@ -52,4 +52,11 @@ router
 
 router.route("/:slug").get(articleController.findBySlug);
 
+router
+  .route("/:id")
+  .delete(
+    passport.authenticate("accessToken", { session: false }),
+    articleController.remove
+  );
+
 module.exports = router;
