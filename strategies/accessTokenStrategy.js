@@ -10,15 +10,19 @@ module.exports = new jwtStrategy(
     secretOrKey: configs.auth.accessTokenSecretKey,
   },
   async (payload, done) => {
-    const user = userModel.findByPk(payload.id, {
-      raw: true,
-      attributes: {
-        exclude: ["password"],
-      },
-    });
+    try {
+      const user = userModel.findByPk(payload.id, {
+        raw: true,
+        attributes: {
+          exclude: ["password"],
+        },
+      });
 
-    if (!user) return done(null, false);
+      if (!user) return done(null, false);
 
-    done(null, user);
+      done(null, user);
+    } catch (error) {
+      done(error);
+    }
   }
 );
