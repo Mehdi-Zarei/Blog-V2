@@ -31,7 +31,6 @@ app.use(cors());
 
 passport.use(localStrategy);
 passport.use(googleStrategy);
-
 passport.use("accessToken", accessTokenStrategy);
 passport.use("refreshToken", refreshTokenStrategy);
 
