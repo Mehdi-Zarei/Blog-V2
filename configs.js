@@ -29,7 +29,11 @@ module.exports = {
       process.env.REFRESH_TOKEN_EXPIRE_TIME_IN_REDIS,
   },
 
+  domain: process.env.DOMAIN,
+
   mySql: {
     uri: process.env.MY_SQL_URI,
   },
+
+  isProduction: process.env.NODE_ENV === "Production",
 };
