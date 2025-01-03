@@ -136,3 +136,79 @@ exports.getAll = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.getArticleInfos = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const userID = req.user.id;
+
+    const article = await articlesModel.findByPk(id, {
+      raw: true,
+    });
+
+    if (!article) {
+      return res.status(404).json({ message: "Article not found !!" });
+    } else {
+      article.createdAt = calculatingRelativeTimeDifference(article.createdAt);
+      article.updatedAt = calculatingRelativeTimeDifference(article.updatedAt);
+    }
+
+    if (article.author_id !== userID) {
+      return res.status(403).json({ message: "Forbidden !!" });
+    }
+
+    return res.status(200).json({
+      title: article.title,
+      description: article.description,
+      content: article.content,
+      cover: article.cover,
+      publish: article.publish,
+      tags: article.tags,
+      createdAt: article.createdAt,
+      updatedAt: article.updatedAt,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateArticle = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const userID = req.user.id;
+    let { title, description, content, tags, cover } = req.body;
+
+    const article = await articlesModel.findByPk(id);
+
+    if (!article) {
+      return res.status(404).json({ message: "Article not found !!" });
+    }
+
+    if (article.author_id !== userID) {
+      return res.status(403).json({ message: "Forbidden !!" });
+    }
+
+    if (title) article.title = title;
+
+    if (description) article.description = description;
+
+    if (content) article.content = content;
+
+    if (tags) article.tags = tags;
+
+    if (req.file) {
+      article.cover = `public/images/covers/${req.file.filename}`;
+    } else {
+      article.cover = null;
+    }
+    await article.save();
+
+    return res.status(200).json({
+      // message: "Article info updated successfully",
+      article,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
