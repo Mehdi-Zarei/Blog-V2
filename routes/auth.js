@@ -22,6 +22,17 @@ router
   );
 
 router
+  .route("/google")
+  .get(passport.authenticate("google", { scope: ["profile", "email"] }));
+
+router
+  .route("/google/callback")
+  .get(
+    passport.authenticate("google", { session: false }),
+    authController.login
+  );
+
+router
   .route("/refresh")
   .get(
     passport.authenticate("refreshToken", { session: false }),
