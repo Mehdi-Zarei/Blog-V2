@@ -67,8 +67,6 @@ exports.register = async (req, res, next) => {
       configs.redis.refreshTokenExpireTimeInRedis
     );
 
-    console.log(req.header("authorization"));
-
     return res.status(201).json({
       message: "New user created successfully.",
       accessToken,
@@ -116,6 +114,15 @@ exports.login = async (req, res, next) => {
 
 exports.refreshToken = async (req, res, next) => {
   try {
+    const user = req.user;
+
+    const accessToken = jwt.sign(
+      { id: user.id, role: user.role },
+      configs.auth.accessTokenSecretKey,
+      { expiresIn: `${configs.auth.accessTokenExpireInMinutes}m` }
+    );
+
+    return res.json({ accessToken });
   } catch (error) {
     next(error);
   }
