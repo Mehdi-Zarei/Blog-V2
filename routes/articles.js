@@ -5,7 +5,6 @@ const validator = require("../middlewares/bodyValidate");
 const articleSchema = require("../validators/createArticle");
 const articleController = require("../controllers/articles");
 const passport = require("passport");
-const { createUploader } = require("../utils/uploader");
 
 const multer = require("multer");
 const path = require("path");
@@ -53,10 +52,23 @@ router
 router.route("/:slug").get(articleController.findBySlug);
 
 router
-  .route("/:id")
+  .route("/:id/remove")
   .delete(
     passport.authenticate("accessToken", { session: false }),
     articleController.remove
+  );
+
+router
+  .route("/:id/edit")
+  .get(
+    passport.authenticate("accessToken", { session: false }),
+    articleController.getArticleInfos
+  )
+  .put(
+    passport.authenticate("accessToken", { session: false }),
+    uploader.single("cover"),
+    validator(articleSchema),
+    articleController.updateArticle
   );
 
 module.exports = router;
