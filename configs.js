@@ -15,6 +15,11 @@ module.exports = {
     refreshTokenSecretKey: process.env.REFRESH_TOKEN_SECRET_KEY,
     accessTokenExpireInMinutes: process.env.ACCESS_TOKEN_EXPIRE_IN_MINUTES,
     refreshTokenExpireInDays: process.env.REFRESH_TOKEN_EXPIRE_IN_DAYS,
+
+    google: {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    },
   },
 
   redis: {
