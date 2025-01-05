@@ -53,4 +53,6 @@ router
     authController.getMe
   );
 
+router.route("/otp/send").post(authController.sendOtp);
+
 module.exports = router;
