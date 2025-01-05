@@ -1,10 +1,10 @@
-const { raw } = require("mysql2");
 const userModel = require("../models/Users");
 const { Op } = require("sequelize");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const configs = require("../configs");
 const redis = require("../redis");
+const sendOtp = require("../utils/sendOtp");
 
 exports.register = async (req, res, next) => {
   try {
@@ -145,6 +145,34 @@ exports.getMe = async (req, res, next) => {
     const user = req.user;
 
     return res.json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// exports.sendOtp = async (req, res, next) => {
+//   try {
+//     const { userPhone } = req.body;
+
+//     await sendOtp(userPhone);
+
+//     return res.status(200).json({ message: "OTP Code Sended Successfully." });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
+exports.sendOtp = async (req, res, next) => {
+  try {
+    const { userPhone } = req.body;
+
+    const otpResult = await sendOtp(userPhone);
+
+    if (!otpResult.success) {
+      return res.status(400).json({ message: "Error sending OTP code !!" });
+    }
+
+    res.status(200).json({ message: "OTP code sent successfully." });
   } catch (error) {
     next(error);
   }
