@@ -35,5 +35,11 @@ module.exports = {
     uri: process.env.MY_SQL_URI,
   },
 
+  Otp: {
+    patternCode: process.env.OTP_PATTERN,
+    user: process.env.OTP_USER,
+    pass: process.env.OTP_PASS,
+  },
+
   isProduction: process.env.NODE_ENV === "Production",
 };
