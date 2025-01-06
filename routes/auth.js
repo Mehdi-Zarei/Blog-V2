@@ -2,21 +2,31 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 
-const validateSchema = require("../validators/auth");
-const validate = require("../middlewares/bodyValidate");
-const authController = require("../controllers/auth");
-const loginValidatorSchema = require("../validators/login");
+//* Middlewares
+const paramsAndBodyValidate = require("../middlewares/bodyAndParams");
+const bodyValidate = require("../middlewares/bodyValidate");
 const captcha = require("../middlewares/captcha");
-const forgetPasswordSchema = require("../validators/forgetPassword");
+
+//*Yup Schema
+const validateSchema = require("../validators/auth");
+const loginValidatorSchema = require("../validators/login");
+const {
+  forgetPasswordSchema,
+  resetPasswordSchema,
+  resetPasswordParamsSchema,
+} = require("../validators/forgetPassword");
+
+//* Controller
+const authController = require("../controllers/auth");
 
 router
   .route("/register")
-  .post(validate(validateSchema), authController.register);
+  .post(bodyValidate(validateSchema), authController.register);
 
 router
   .route("/login")
   .post(
-    validate(loginValidatorSchema),
+    bodyValidate(loginValidatorSchema),
     captcha,
     passport.authenticate("local", { session: false }),
     authController.login
@@ -58,8 +68,13 @@ router.route("/otp/send").post(authController.sendOtp);
 
 router
   .route("/forget-password")
-  .post(validate(forgetPasswordSchema), authController.forgetPassword);
+  .post(bodyValidate(forgetPasswordSchema), authController.forgetPassword);
 
-router.route("/reset-password/:token").post(authController.resetPassword);
+router
+  .route("/reset-password/:token")
+  .post(
+    paramsAndBodyValidate(resetPasswordParamsSchema, resetPasswordSchema),
+    authController.resetPassword
+  );
 
 module.exports = router;
