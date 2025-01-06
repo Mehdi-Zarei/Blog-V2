@@ -1,10 +1,11 @@
 const userModel = require("../models/Users");
-const { Op } = require("sequelize");
+const { Op, UUID } = require("sequelize");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const configs = require("../configs");
 const redis = require("../redis");
 const sendOtp = require("../utils/sendOtp");
+const { sendVerificationEmail } = require("../utils/nodemailer");
 
 exports.register = async (req, res, next) => {
   try {
@@ -150,18 +151,6 @@ exports.getMe = async (req, res, next) => {
   }
 };
 
-// exports.sendOtp = async (req, res, next) => {
-//   try {
-//     const { userPhone } = req.body;
-
-//     await sendOtp(userPhone);
-
-//     return res.status(200).json({ message: "OTP Code Sended Successfully." });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
-
 exports.sendOtp = async (req, res, next) => {
   try {
     const { userPhone } = req.body;
@@ -173,6 +162,57 @@ exports.sendOtp = async (req, res, next) => {
     }
 
     res.status(200).json({ message: "OTP code sent successfully." });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.forgetPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    const user = await userModel.findOne({ where: { email }, raw: true });
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "User Not Found With This Email !!" });
+    }
+
+    const resetPasswordToken = configs.nodemailer.generateResetPasswordToken;
+
+    await redis.set(`resetPassword:${email}`, resetPasswordToken, "EX", 3600);
+
+    const subject = "Reset Password Link";
+
+    const text = `
+    <p>سلام ${user.name} عزیز،</p>
+    <p>درخواست تغییر رمز عبور برای حساب کاربری شما ثبت شده است. اگر این درخواست از سمت شما بوده است، لطفاً از طریق لینک زیر اقدام به تغییر رمز عبور خود کنید:</p>
+    <a href="http://localhost:${configs.server.port}/auth/reset-password/${configs.nodemailer.generateResetPasswordToken}">تغییر رمز عبور</a>
+    <p>این لینک تا <strong>۱ ساعت</strong> آینده معتبر است. اگر شما این درخواست را ارسال نکرده‌اید، لطفاً این ایمیل را نادیده بگیرید یا با پشتیبانی تماس بگیرید.</p>
+    <p>با تشکر،</p>
+    <p>تیم پشتیبانی</p>
+`;
+
+    const emailSent = await sendVerificationEmail(user, subject, text);
+
+    if (emailSent) {
+      return res
+        .status(200)
+        .json({ message: "Email has been sent successfully." });
+    } else {
+      return res
+        .status(500)
+        .json({ message: "Failed to send email. Please try again later." });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.resetPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
   } catch (error) {
     next(error);
   }
