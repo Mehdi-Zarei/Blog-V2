@@ -19,6 +19,7 @@ A simple and functional blogging website that allows users to create articles, m
 - **Google Login**: Users can log in using their Google account.
 - **JWT Authentication**: Secure authentication using JSON Web Tokens (JWT) for access and refresh tokens.
 - **Password Hashing**: User passwords are securely hashed using bcrypt.
+- **CAPTCHA Verification**: Prevent bots with CAPTCHA during login.
 
 ## 🛠️ Technologies
 
@@ -112,6 +113,10 @@ Blog_V2/
 #### JWT authentication:
 
 - After logging in, you will receive an access token and a refresh token for secure authentication.
+
+#### CAPTCHA Verification:
+
+- During login, you'll be asked to complete a CAPTCHA to prove you're
 
 ---
 
