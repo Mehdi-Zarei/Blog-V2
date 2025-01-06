@@ -7,6 +7,7 @@ const validate = require("../middlewares/bodyValidate");
 const authController = require("../controllers/auth");
 const loginValidatorSchema = require("../validators/login");
 const captcha = require("../middlewares/captcha");
+const forgetPasswordSchema = require("../validators/forgetPassword");
 
 router
   .route("/register")
@@ -54,5 +55,11 @@ router
   );
 
 router.route("/otp/send").post(authController.sendOtp);
+
+router
+  .route("/forget-password")
+  .post(validate(forgetPasswordSchema), authController.forgetPassword);
+
+router.route("/reset-password/:token").post(authController.resetPassword);
 
 module.exports = router;
