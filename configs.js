@@ -1,5 +1,3 @@
-const uuid = require("uuid").v4;
-
 module.exports = {
   server: {
     port: process.env.SERVER_PORT,
@@ -46,7 +44,6 @@ module.exports = {
   nodemailer: {
     user: process.env.nodemailerEmailAccount,
     pass: process.env.nodemailerPasswordAccount,
-    generateResetPasswordToken: uuid(),
   },
 
   isProduction: process.env.NODE_ENV === "Production",
