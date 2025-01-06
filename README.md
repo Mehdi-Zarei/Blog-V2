@@ -12,7 +12,6 @@ A simple and functional blogging website that allows users to create articles, m
 
 - **Create Articles**: Registered users can create new articles.
 - **Tags**: Each article can have relevant tags.
-- **Comments**: Users can leave comments on articles without needing to register.
 - **Read Articles**: All users (even without registration) can read articles.
 - **Password Reset**: Users can reset their password using a one-time link sent to their email.
 - **OTP Verification**: Users can verify their identity using a one-time password (OTP) sent to their phones.
@@ -58,7 +57,7 @@ A simple and functional blogging website that allows users to create articles, m
 5.  **Access the Project:**
 
     ```
-    Open your browser and go to http://localhost:3000/auth/register
+    Open your browser and go to http://localhost:3000/api/auth/register
 
     ```
 
@@ -86,36 +85,44 @@ Blog_V2/
 └── package.json       # Dependencies file
 ```
 
-- 📝 How to Use
+---
 
-- Create Articles:
+### **📝 How to Use**
 
-After registering, you can create new articles from the "New article" section.
+#### Create Articles:
 
-- Manage tags:
+- After registering, you can create new articles from the "New article" section.
 
-Add relevant tags when creating an article.
+#### Manage tags:
 
-Reset password:
+- Add relevant tags when creating an article.
 
-If you forgot your password, click "Forgot Password" and follow the instructions sent to your email.
+#### Reset password:
 
-- OTP verification:
+- If you forgot your password, click "Forgot Password" and follow the instructions sent to your email.
 
-For sensitive actions (e.g., changing email), you will receive an OTP to verify your identity.
+#### OTP verification:
 
-- Google login:
+- For sensitive actions (e.g., changing email), you will receive an OTP to verify your identity.
 
-By clicking "Sign in with Google", you can log in using your Google account.
+#### Google login:
 
-- JWT authentication:
+- By clicking "Sign in with Google", you can log in using your Google account.
 
-After logging in, you will receive an access token and a refresh token for secure authentication.
+#### JWT authentication:
 
-- 📜 License
+- After logging in, you will receive an access token and a refresh token for secure authentication.
 
-This project is licensed under the MIT License. For more information, see the LICENSE file.
+---
 
-- 📞 Contact
+#### 📜 License
 
-To get in touch with me, you can email mahdizareiofficial@gmail.com.
+- This project is licensed under the MIT License. For more information, see the LICENSE file.
+
+---
+
+#### 📞 Contact
+
+- To get in touch with me, you can email mahdizareiofficial@gmail.com.
+
+---
