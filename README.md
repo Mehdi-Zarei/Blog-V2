@@ -6,7 +6,7 @@
 
 ![Blog Screenshot](https://github.com/Mehdi-Zarei/Blog-V2/raw/fa5087e20b679c72faa5534038b442e33e1c8f61/public/images/1.jpg)
 
-A simple and functional blogging website that allows users to create articles, manage tags, read other users' articles, and leave comments.
+## A simple and functional blogging website that allows users to create articles, manage tags, read other users' articles, and leave comments.
 
 ## ✨ Features
 
