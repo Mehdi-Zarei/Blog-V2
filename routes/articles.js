@@ -42,7 +42,7 @@ const uploader = multer({
 router
   .route("/")
   .post(
-    passport.authenticate("accessToken", { session: false }), //todo: uncomment this line
+    passport.authenticate("accessToken", { session: false }),
     uploader.single("cover"),
     validator(articleSchema),
     articleController.create
