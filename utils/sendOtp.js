@@ -87,7 +87,6 @@ const sendOtp = async (userPhone) => {
         body: {
           op: "pattern",
           user: configs.Otp.user,
-          // user: configs.Otp,
           pass: configs.Otp.pass,
           fromNum: "3000505",
           toNum: userPhone,
