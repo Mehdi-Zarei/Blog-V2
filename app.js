@@ -10,6 +10,8 @@ const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
 const articlesRouter = require("./routes/articles");
 
+const swaggerRouter = require("./apiDoc/swagger.routes");
+
 const captchaController = require("./controllers/captcha");
 
 const { errorHandler } = require("./middlewares/errorHandler");
@@ -40,6 +42,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/captcha", captchaController.get);
 app.use("/api/users", userRouter);
 app.use("/api/articles", articlesRouter);
+app.use("/api-doc", swaggerRouter);
 
 //* 404 Error Handler
 
