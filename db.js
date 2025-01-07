@@ -1,25 +1,6 @@
 const configs = require("./configs");
 const { Sequelize } = require("sequelize");
 
-//* Way 1
-
-// const sequelize = new Sequelize(
-//   `mysql://${configs.DB.username}:${configs.DB.password}@${configs.DB.host}/${configs.DB.database}`,
-//   {
-//     logging: false, // Optional: For disabling logging
-//   }
-// );
-
-///////////////////////////////////////////
-
-//* Way 2
-// const sequelize = new Sequelize(`mysql://root:@localhost:3306/BLOG_V2`, {
-// logging: console.log, // Optional: Disable logging
-//   logging: false,
-// });
-
-//* Way 3
-
 const sequelize = new Sequelize({
   host: configs.DB.host,
   username: configs.DB.username,
