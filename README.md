@@ -20,6 +20,7 @@
 - **JWT Authentication**: Secure authentication using JSON Web Tokens (JWT) for access and refresh tokens.
 - **Password Hashing**: User passwords are securely hashed using bcrypt.
 - **CAPTCHA Verification**: Prevent bots with CAPTCHA during login.
+- **API Documentation**: API documentation is available via Swagger at [http://localhost:3000/api-doc#/](http://localhost:3000/api-doc#/).
 
 ## 🛠️ Technologies
 
@@ -27,7 +28,7 @@
 - **Frameworks**: Express.js
 - **Database**: MySQL (using Sequelize)
 - **Caching**: Redis (for storing refresh tokens and one-time links)
-- **Authentication**: Passport.js (with Local, Google and JWT strategies)
+- **Authentication**: Passport.js (with Local, Google, and JWT strategies)
 - **Password Hashing**: bcrypt
 - **Validation**: Yup (for data validation)
 - **Email Service**: Nodemailer (for sending emails)
@@ -35,39 +36,50 @@
 
 ## 🚀 Getting Started
 
-1.  **Clone the Repository**:
-    ```bash
-    git clone https://github.com/Mehdi-Zarei/Blog-V2.git
-    cd Blog-V2
-    ```
-2.  **Install Dependencies**:
-    ```bash
-    npm install
-    ```
-3.  **Set Up Environment Variables:**
-    ```bash
-    A) Rename the .envExample file to .env
-    B) Fill in the required values in the .env file.
-    ```
-4.  **Run the Project**:
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/Mehdi-Zarei/Blog-V2.git
+   cd Blog-V2
+   ```
+2. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
+3. **Set Up Environment Variables:**
+   ```bash
+   A) Rename the .envExample file to .env
+   B) Fill in the required values in the .env file.
+   ```
+4. **Set Up the Database**:
 
-    ```bash
-      npm run dev
-    ```
+   - Inside the root directory, you will find a file named `blog_v2.sql`.
+   - Import this file into your MySQL database to create the necessary structure.
+   - You can do this using a MySQL client or command line tool. For example, in MySQL Workbench:
+     - Go to **File > Open SQL Script** and open `blog_v2.sql`.
+     - Run the script to create the required database structure.
 
-5.  **Access the Project:**
+5. **Run the Project**:
 
-    ```
-    Open your browser and go to http://localhost:3000/api/auth/register
+   ```bash
+   npm run dev
+   ```
 
-    ```
+6. **Access the Project**:
 
-    🗂️ Project Structure
+   ```
+   Open your browser and go to http://localhost:3000/api/auth/register
+   ```
 
-        The project follows the MVC structure:
+7. **API Documentation**:
+   - For detailed API documentation, visit [Swagger API Docs](http://localhost:3000/api-doc#/).
+
+🗂️ **Project Structure**
+
+The project follows the MVC structure:
 
 ```
 Blog_V2/
+├── apiDoc             # Swagger Api Documents
 ├── controllers/       # Controllers
 ├── models/            # Database models
 ├── routes/            # Application routes
@@ -84,6 +96,7 @@ Blog_V2/
 ├── redis.js           # Redis configs
  file
 └── package.json       # Dependencies file
+
 ```
 
 ---
@@ -116,7 +129,7 @@ Blog_V2/
 
 #### CAPTCHA Verification:
 
-- During login, you'll be asked to complete a CAPTCHA to prove you're
+- During login, you'll be asked to complete a CAPTCHA to prove you're human.
 
 ---
 
@@ -129,5 +142,3 @@ Blog_V2/
 #### 📞 Contact
 
 - To get in touch with me, you can email mahdizareiofficial@gmail.com.
-
----
