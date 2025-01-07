@@ -1,4 +1,4 @@
-const { uuidv4 } = require("uuid").v4;
+const uuidv4 = require("uuid").v4;
 const svgCaptcha = require("svg-captcha");
 const redis = require("../redis");
 
@@ -18,13 +18,6 @@ exports.get = async (req, res, next) => {
       "EX",
       60 * 5
     );
-
-    //* To log in, the user needs to enter a uuid and captcha, which are generated after sending the request and can be accessed in the console.
-
-    //TODO : Clear Logs
-
-    console.log("UUID -->", uuid);
-    console.log("Captcha -->", captcha.text);
 
     res.json({
       uuid,
