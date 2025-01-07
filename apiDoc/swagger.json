@@ -1,0 +1,1455 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "BlogVibe API",
+    "version": "1.0.0",
+    "description": "Comprehensive API documentation for BlogVibe, your personal blogging platform. This document covers all available endpoints, their usage, and expected responses.",
+    "contact": {
+      "name": "Mahdi Zarei",
+      "email": "mahdizareiofficial@gmail.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Development server"
+    }
+  ],
+  "paths": {
+    "/api/auth/register": {
+      "post": {
+        "summary": "Register a new user",
+        "description": "Register a new user by providing name, username, email, phone number, password, and password confirmation.",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterUser"
+              },
+              "examples": {
+                "validRequest": {
+                  "value": {
+                    "name": "John Doe",
+                    "userName": "johndoe123",
+                    "email": "johndoe@example.com",
+                    "phone": "09121111111",
+                    "password": "Password@123!",
+                    "confirmPassword": "Password@123!"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User successfully registered.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                },
+                "examples": {
+                  "successResponse": {
+                    "value": {
+                      "message": "User registered successfully.",
+                      "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict: User already exists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "usernameConflict": {
+                    "value": {
+                      "message": "This username already exists!"
+                    }
+                  },
+                  "emailConflict": {
+                    "value": {
+                      "message": "This email already exists!"
+                    }
+                  },
+                  "phoneConflict": {
+                    "value": {
+                      "message": "This phone number already exists!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "summary": "Login a user",
+        "description": "Authenticate a user with their username/email, password, UUID, and CAPTCHA.",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginUser"
+              },
+              "examples": {
+                "validRequest": {
+                  "value": {
+                    "username": "johndoe123",
+                    "password": "Password@123!",
+                    "uuid": "550e8400-e29b-41d4-a716-446655440000",
+                    "captcha": "ABC123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User successfully authenticated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                },
+                "examples": {
+                  "successResponse": {
+                    "value": {
+                      "message": "User logged in successfully.",
+                      "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/api/auth/google": {
+      "get": {
+        "summary": "Google OAuth2 Authentication",
+        "description": "Redirects the user to Google's OAuth2 authentication page to request access to their profile and email. After successful authentication, Google redirects back to the configured callback endpoint.",
+        "tags": ["Authentication"],
+        "responses": {
+          "302": {
+            "description": "Redirect to Google's OAuth2 authentication page",
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string",
+                  "example": "https://accounts.google.com/o/oauth2/auth?response_type=code&scope=profile%20email&redirect_uri=..."
+                },
+                "description": "The URL to Google's OAuth2 authentication page"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Internal Server Error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/google/callback": {
+      "get": {
+        "summary": "Google OAuth2 Callback",
+        "description": "Callback endpoint for Google OAuth2 authentication. After successful authentication by Google, this endpoint processes the user's profile and completes the login process.",
+        "tags": ["Authentication"],
+        "responses": {
+          "200": {
+            "description": "Login successful and user authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                },
+                "example": {
+                  "message": "User logged in successfully.",
+                  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/api/auth/refresh": {
+      "get": {
+        "summary": "Refresh Access Token",
+        "description": "Generates a new access token using the provided refresh token. The user must authenticate with the `refreshToken` strategy.",
+        "tags": ["Authentication"],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "The refresh token used to generate a new access token.",
+            "schema": {
+              "type": "string",
+              "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Access token refreshed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accessToken": {
+                      "type": "string",
+                      "description": "The new JWT access token",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Missing or invalid refresh token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "message": "Refresh token is missing or invalid."
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "security": [
+          {
+            "refreshToken": []
+          }
+        ]
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "summary": "Get Current User",
+        "description": "Retrieve the details of the currently authenticated user using their access token.",
+        "tags": ["User"],
+        "responses": {
+          "200": {
+            "description": "User details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The user's unique identifier",
+                      "example": "550e8400-e29b-41d4-a716-446655440000"
+                    },
+                    "username": {
+                      "type": "string",
+                      "description": "The user's username",
+                      "example": "johndoe123"
+                    },
+                    "email": {
+                      "type": "string",
+                      "description": "The user's email address",
+                      "example": "johndoe@example.com"
+                    },
+                    "role": {
+                      "type": "string",
+                      "description": "The user's role",
+                      "example": "user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "security": [
+          {
+            "accessToken": []
+          }
+        ]
+      }
+    },
+    "/api/auth/otp/send": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Send OTP to user's phone number",
+        "description": "This endpoint is used to send a one-time password (OTP) to the user's phone number for identity verification.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["userPhone"],
+                "properties": {
+                  "userPhone": {
+                    "type": "string",
+                    "description": "User's phone number",
+                    "example": "+989123456789"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OTP code sent successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "OTP code sent successfully."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error sending OTP code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Error sending OTP code !!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Internal Server Error :(("
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/forget-password": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Request password reset",
+        "description": "This endpoint allows the user to request a password reset by providing their registered email. An email with a reset link will be sent if the email is valid.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "The email address associated with the user's account",
+                    "example": "user@example.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset email sent successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Email has been sent successfully."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found with the provided email.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "User Not Found With This Email !!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error sending email.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Failed to send email. Please try again later."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/reset-password/{token}": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Reset user password",
+        "description": "This endpoint allows a user to reset their password using a valid token that was sent to their email. The token must be provided in the URL, and the new password must be sent in the request body.",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "description": "The reset password token received by the user",
+            "schema": {
+              "type": "string",
+              "example": "abcd1234efgh5678"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["password"],
+                "properties": {
+                  "password": {
+                    "type": "string",
+                    "description": "The new password for the user",
+                    "example": "newPassword123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Your Password Changed Successfully."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Invalid or expired reset token, or user not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid or expired reset token."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error processing the password reset.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Error resetting the password, please try again later."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles": {
+      "post": {
+        "tags": ["Articles"],
+        "summary": "Create a new article",
+        "description": "This endpoint allows authenticated users to create a new article. The user must be authenticated using an access token, and the article data (including title, description, content, and tags) must be provided. Optionally, a cover image can be uploaded.",
+        "security": [
+          {
+            "accessToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["title", "description", "content"],
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "The title of the article",
+                    "example": "How to Create an Article"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "A short description of the article",
+                    "example": "This article explains how to create an article using the API."
+                  },
+                  "content": {
+                    "type": "string",
+                    "description": "The full content of the article",
+                    "example": "This is the content of the article."
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Tags associated with the article",
+                    "example": ["Technology", "API"]
+                  },
+                  "cover": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "The cover image for the article (optional)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Article created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "New Article Created Successfully."
+                    },
+                    "newArticles": {
+                      "type": "object",
+                      "properties": {
+                        "title": {
+                          "type": "string",
+                          "example": "How to Create an Article"
+                        },
+                        "description": {
+                          "type": "string",
+                          "example": "This article explains how to create an article using the API."
+                        },
+                        "content": {
+                          "type": "string",
+                          "example": "This is the content of the article."
+                        },
+                        "slug": {
+                          "type": "string",
+                          "example": "how-to-create-an-article"
+                        },
+                        "publish": {
+                          "type": "boolean",
+                          "example": false
+                        },
+                        "author_id": {
+                          "type": "string",
+                          "example": "abc123"
+                        },
+                        "tags": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "example": ["Technology", "API"]
+                        },
+                        "cover": {
+                          "type": "string",
+                          "example": "/images/covers/sample-cover.jpg"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request, missing or invalid data.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid data provided."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized, invalid or missing access token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Unauthorized, please login."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Internal server error."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Articles"],
+        "summary": "Get all articles",
+        "description": "This endpoint retrieves all articles from the system.",
+        "responses": {
+          "200": {
+            "description": "List of articles.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "title": {
+                        "type": "string",
+                        "example": "How to Create an Article"
+                      },
+                      "description": {
+                        "type": "string",
+                        "example": "This article explains how to create an article using the API."
+                      },
+                      "content": {
+                        "type": "string",
+                        "example": "This is the content of the article."
+                      },
+                      "slug": {
+                        "type": "string",
+                        "example": "how-to-create-an-article"
+                      },
+                      "publish": {
+                        "type": "boolean",
+                        "example": false
+                      },
+                      "author_id": {
+                        "type": "string",
+                        "example": "abc123"
+                      },
+                      "tags": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "example": ["Technology", "API"]
+                      },
+                      "cover": {
+                        "type": "string",
+                        "example": "/images/covers/sample-cover.jpg"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Internal server error."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/{slug}": {
+      "get": {
+        "tags": ["Articles"],
+        "summary": "Get article by slug",
+        "description": "This endpoint allows users to retrieve a specific article based on the unique slug. The article includes details such as title, description, content, and the author's information.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "description": "The unique slug of the article",
+            "schema": {
+              "type": "string",
+              "example": "how-to-create-an-article"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Article found successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string",
+                      "example": "How to Create an Article"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "This article explains how to create an article using the API."
+                    },
+                    "content": {
+                      "type": "string",
+                      "example": "This is the content of the article."
+                    },
+                    "slug": {
+                      "type": "string",
+                      "example": "how-to-create-an-article"
+                    },
+                    "publish": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "author": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "example": "John Doe"
+                        },
+                        "userName": {
+                          "type": "string",
+                          "example": "john_doe"
+                        }
+                      }
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2025-01-01T12:00:00Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "example": "2025-01-02T15:30:00Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Article not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Article not found !!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Internal server error."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/{id}/remove": {
+      "delete": {
+        "tags": ["Articles"],
+        "summary": "Delete an article by ID",
+        "description": "This endpoint allows the user to delete an article based on the unique ID. Only the author of the article is allowed to delete it.",
+        "security": [
+          {
+            "accessToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the article to be deleted",
+            "schema": {
+              "type": "string",
+              "example": "123"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Article removed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Article removed successfully."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden: The user is not the author of the article.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Forbidden !!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Article not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Article not found !!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Internal server error."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/{id}/edit": {
+      "get": {
+        "tags": ["Articles"],
+        "summary": "Get article details by ID",
+        "description": "This endpoint retrieves the article information by the provided article ID. Only the author of the article can view the article details.",
+        "security": [
+          {
+            "accessToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the article to retrieve",
+            "schema": {
+              "type": "string",
+              "example": "123"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved article details.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string",
+                      "example": "Sample Article Title"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "A brief description of the article."
+                    },
+                    "content": {
+                      "type": "string",
+                      "example": "This is the content of the article."
+                    },
+                    "cover": {
+                      "type": "string",
+                      "example": "/images/covers/sample-cover.jpg"
+                    },
+                    "publish": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "Technology"
+                      }
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2023-01-01T00:00:00.000Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "example": "2023-01-02T00:00:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden: The user is not the author of the article.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Forbidden !!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Article not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Article not found !!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Articles"],
+        "summary": "Update article details by ID",
+        "description": "This endpoint allows the user to update the article details (e.g., title, description, content, tags, and cover image) by providing the article ID. Only the author of the article is allowed to edit it.",
+        "security": [
+          {
+            "accessToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the article to update",
+            "schema": {
+              "type": "string",
+              "example": "123"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "Updated Article Title"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Updated description of the article."
+                  },
+                  "content": {
+                    "type": "string",
+                    "example": "Updated content of the article."
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "example": "Science"
+                    }
+                  },
+                  "cover": {
+                    "type": "string",
+                    "example": "new-cover.jpg"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully updated the article.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "article": {
+                      "type": "object",
+                      "properties": {
+                        "title": {
+                          "type": "string",
+                          "example": "Updated Article Title"
+                        },
+                        "description": {
+                          "type": "string",
+                          "example": "Updated description."
+                        },
+                        "content": {
+                          "type": "string",
+                          "example": "Updated content."
+                        },
+                        "tags": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "example": "Science"
+                          }
+                        },
+                        "cover": {
+                          "type": "string",
+                          "example": "new-cover.jpg"
+                        },
+                        "publish": {
+                          "type": "boolean",
+                          "example": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden: The user is not the author of the article.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Forbidden !!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Article not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Article not found !!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Internal server error."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "googleOAuth": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://accounts.google.com/o/oauth2/auth",
+            "tokenUrl": "https://oauth2.googleapis.com/token",
+            "scopes": {
+              "profile": "Access to user's profile information",
+              "email": "Access to user's email address"
+            }
+          }
+        }
+      },
+      "accessToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "The access token required for accessing protected routes."
+      },
+      "refreshToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "The refresh token used to generate a new access token."
+      }
+    },
+    "schemas": {
+      "RegisterUser": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The user's full name."
+          },
+          "userName": {
+            "type": "string",
+            "description": "The user's unique username."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "The user's email address."
+          },
+          "phone": {
+            "type": "string",
+            "description": "The user's phone number."
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "description": "The user's password."
+          },
+          "confirmPassword": {
+            "type": "string",
+            "format": "password",
+            "description": "The user's password confirmation."
+          }
+        },
+        "required": [
+          "name",
+          "userName",
+          "email",
+          "phone",
+          "password",
+          "confirmPassword"
+        ],
+        "example": {
+          "name": "John Doe",
+          "userName": "johndoe123",
+          "email": "johndoe@example.com",
+          "phone": "09121111111",
+          "password": "Password@123!",
+          "confirmPassword": "Password@123!"
+        }
+      },
+      "LoginUser": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "The user's username or email."
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "description": "The user's password."
+          },
+          "uuid": {
+            "type": "string",
+            "format": "uuid",
+            "description": "A unique identifier for the login request."
+          },
+          "captcha": {
+            "type": "string",
+            "description": "The CAPTCHA code to verify the user is not a bot."
+          }
+        },
+        "required": ["username", "password", "uuid", "captcha"],
+        "example": {
+          "username": "johndoe123",
+          "password": "Password@123!",
+          "uuid": "550e8400-e29b-41d4-a716-446655440000",
+          "captcha": "ABC123"
+        }
+      },
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Success message."
+          },
+          "accessToken": {
+            "type": "string",
+            "description": "JWT access token."
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "JWT refresh token."
+          }
+        },
+        "example": {
+          "message": "User logged in successfully.",
+          "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+          "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Error message."
+          }
+        },
+        "example": {
+          "message": "An error occurred."
+        }
+      }
+    },
+    "responses": {
+      "BadRequestError": {
+        "description": "Bad Request: Invalid input data.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "examples": {
+              "invalidData": {
+                "value": {
+                  "message": "Invalid input data."
+                }
+              }
+            }
+          }
+        }
+      },
+      "UnauthorizedError": {
+        "description": "Unauthorized: Invalid credentials.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "examples": {
+              "invalidCredentials": {
+                "value": {
+                  "message": "Invalid credentials."
+                }
+              }
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Internal Server Error: An unexpected error occurred.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "examples": {
+              "serverError": {
+                "value": {
+                  "message": "Internal server error."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
