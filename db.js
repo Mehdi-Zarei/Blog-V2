@@ -41,7 +41,7 @@ const sequelize = new Sequelize({
 
 (async function syncDatabase() {
   try {
-    await sequelize.sync({ alert: true, force: false }); //TODO: remove force: true
+    await sequelize.sync({ alert: true });
     console.log(`Database ${configs.DB.database} synced successfully.`);
   } catch (err) {
     console.error(`Error syncing ${configs.DB.database} database:`, err);
